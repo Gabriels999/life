@@ -1,6 +1,8 @@
-from helpers import mount_board
+from helpers import mount_board, read_board
 
 def main():
-    print(mount_board())
+    board = mount_board()
+    print(board)
+    read_board(board)
 
 main()
