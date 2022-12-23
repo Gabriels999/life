@@ -10,7 +10,7 @@ def generate_random():
 
 def mount_board():
     board = ""
-    size = 4
+    size = 50
     for _ in range(size):
         for _ in range(size):
             board+= generate_random()
@@ -18,91 +18,88 @@ def mount_board():
     return board
 
 
-def is_neighbors(a, b, pos):
-    res = []
-    if a == '*':
-        res.append(pos[0])
-
-    if b == '*':
-        res.append(pos[1])
-
+def is_neighbor(list):
+    res = 0
+    for i in list:
+        if i == '*':
+            res += 1
     return res
 
-def is_neighbor(a, pos):
-    if a == '*':
-        return pos
-    return
 
-def set_limits(row, x, y, size, op_type):
-    h1, h2 = y-1, y+1
-    v1, v2 = x-1, x+1
-    sup_esq, inf_esq, sup_dir, inf_dir = (v1, h1), (v2, h1), (v1, h2), (v2, h2)
+def get_neighbors(x, y, rows):
+    size = len(rows)
+    home = (x, y)
+    actual_row = rows[x]
+    neighbors_count = 0
     
-    text = []
-    if op_type == 'h':
-        if y == 0:
-            text.append(is_neighbor(row[h2], (x, h2)))
-        elif y == size:
-            text.append(is_neighbor(row[h1], (x, h1)))
-        else:
-            text.append(is_neighbors(row[h1], row[h2], [(x, h1),(x, h2)]))
-        return text
-    elif op_type == 'v':
-        if y == 0:
-            text.append(is_neighbor(row[v2], (x, h2)))
-        elif y == size:
-            text.append(is_neighbor(row[v1], (x, h1)))
-        else:
-            text.append(is_neighbors(row[v1], row[v2], [(v1, y),(v2, y)]))
-    else:
-        return
-    if text == []:
-        return
-    return text
+    # Possible coordenates
+    back, front = y-1, y+1
+    up, down = x-1, x+1
 
+    #Check horizontally
+    if y == 0:
+        neighbors_count+= is_neighbor([actual_row[front]])
+    elif y == size-1:
+        neighbors_count+= is_neighbor([actual_row[back]])
+    else:
+        neighbors_count+= is_neighbor([actual_row[back], actual_row[front]])
+
+    #Check vertically
+    if x == 0:
+        neighbors_count+= is_neighbor([rows[down][y]])
+    elif x == size-1:
+        neighbors_count+= is_neighbor([rows[up][y]])
+    else:
+        neighbors_count+= is_neighbor([rows[up][y], rows[down][y]])
+
+    #Check diagonals
+    if x == 0 and y == 0:
+        neighbors_count+= is_neighbor([rows[down][front]])
+    elif x == size-1 and y == 0:
+        neighbors_count+= is_neighbor([rows[up][front]])
+    elif x == 0 and y == size-1:
+        neighbors_count+= is_neighbor([rows[down][back]])
+    elif x == size-1 and y == size-1:
+        neighbors_count+= is_neighbor([rows[up][back]])
+    elif x == 0:
+        neighbors_count+= is_neighbor([rows[down][back], rows[down][front]])
+    elif x == size-1:
+        neighbors_count+= is_neighbor([rows[up][back], rows[up][front]])
+    elif y == 0:
+        neighbors_count+= is_neighbor([rows[up][front], rows[down][front]])
+    elif y == size-1:
+        neighbors_count+= is_neighbor([rows[up][back], rows[down][back]])
+    else:
+        neighbors_count+= is_neighbor([rows[up][back], rows[down][back], rows[up][front], rows[down][front]])
+
+    return neighbors_count
+
+
+def update_matrix(actual_item, item_neighbors):
+    new_item = ""
+    if item_neighbors < 2 or item_neighbors > 3:
+        new_item = "."
+    elif item_neighbors == 3 and actual_item == ".":
+        new_item = "*"
+    else:
+        new_item = actual_item
+    return new_item
 
 
 def read_text(rows_list):
     rows_size = len(rows_list[0])
-
+    new_matrix =""
     for x in range(len(rows_list)):
         for y in range(rows_size):
-            if rows_list[x][y] == '*':
-                area_box = {}
-                area_box["origin"] = rows_list[x][y],
-
-                horizontal_neighbors = set_limits(rows_list[x], x, y, rows_size, 'h')
-                if horizontal_neighbors:
-                    area_box["horizontal_neighbors"] = horizontal_neighbors,
-
-                vertical_neighbors = set_limits(rows_list[x], x, y, rows_size, 'v')
-                if vertical_neighbors:
-                    area_box["vertical_neighbors"] = vertical_neighbors,
-
-                diagonal_neighbors = set_limits(rows_list[x], x, y, rows_size, 'd')
-                area_box["diagonal_neighbors"] = diagonal_neighbors,
-                print(area_box)
-
-
-def check_horizontally(rows_set):
-    around_box = ""
-    x = 0
-    while x < len(rows_set):
-        y = 0
-        while y < len(rows_set[x]):
-            # Caso de primeira linha horizontal
-            if x-1 < 0:
-                print(rows_set[x][y])
-            elif (x+1) > len(rows_set):
-                h = x-1
-                print(rows_set[x][y])
-            else:
-                h = x-1
-                print(rows_set[h][y])
-            y+=1
-        x+=1
+            origin = rows_list[x][y]
+            origin_pos = (x, y)
+            neighbors = 0
+            neighbors += get_neighbors(x, y, rows_list)
+            new_matrix+= update_matrix(rows_list[x][y], neighbors)
+        new_matrix+="\n"
+    return new_matrix
 
 
 def read_board(text):
     rows = text.splitlines()
-    read_text(rows)
+    return read_text(rows)
