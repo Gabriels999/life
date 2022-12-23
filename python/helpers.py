@@ -91,8 +91,6 @@ def read_text(rows_list):
     new_matrix =""
     for x in range(len(rows_list)):
         for y in range(rows_size):
-            origin = rows_list[x][y]
-            origin_pos = (x, y)
             neighbors = 0
             neighbors += get_neighbors(x, y, rows_list)
             new_matrix+= update_matrix(rows_list[x][y], neighbors)
