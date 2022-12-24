@@ -1,5 +1,5 @@
 <template>
-    <button :class='{"box":true, "alive":item}' @click="changeState"></button>
+    <button :class='{"box":true, "alive":state}' @click="changeState"></button>
 </template>
 
 <script>
@@ -7,11 +7,17 @@ export default{
     props:{
         row: "",
         col: "",
-        item: 0
+        state: 0
+        
     },
     methods:{
         changeState(){
-            this.$emit('update-life', [this.row, this.col, this.item])
+            this.$emit('update-life', [this.row, this.col, this.state])
+            if (this.state == 1) {
+                this.state = 0
+            } else {
+                this.state = 1
+            }
         }
     }
 }
@@ -29,9 +35,5 @@ export default{
 .alive{
     color: green;
     background-color: green;
-}
-.dead{
-    color: gray;
-    background-color: gray;
 }
 </style>
