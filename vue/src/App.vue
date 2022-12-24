@@ -26,16 +26,16 @@ export default {
       cols: 4,
       rows: 4,
       matriz: [
-        [1,0,0,0,0,1,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0],
+        [1,0,0,0,0,1,0,0,1,0,0],
+        [0,0,1,0,0,0,0,1,0,0,1],
         [0,0,0,0,1,0,0,0,0,0,0],
-        [0,0,1,0,0,0,0,0,0,0,0],
+        [0,0,1,0,0,0,0,1,0,0,1],
         [0,0,0,0,0,1,0,0,0,1,0],
         [0,0,0,1,0,1,0,0,0,0,0],
-        [0,0,0,0,1,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0]
+        [0,0,0,0,1,0,0,1,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,1],
+        [0,1,0,1,0,1,0,1,0,0,0],
+        [0,1,0,0,0,0,0,0,1,0,1]
       ],
       novaMatriz: [],
       alive: false
@@ -44,7 +44,13 @@ export default {
   methods: {
     init(){
       this.matriz = this.geraNovaMatriz(this.matriz)
-      return this.matriz
+      this.rodaGame(this.matriz)
+    },
+    rodaGame(matriz){
+      this.matriz = this.geraNovaMatriz(matriz)
+      setTimeout(()=>{
+        this.rodaGame(this.matriz)
+      }, 700)
     },
     updateCelula(event){
       if (event[2] == 0){
@@ -55,19 +61,23 @@ export default {
     },
     verificaVizinhos(matriz, x, y){
       let possiveisVizinhos = [
-        [-1,-1], [-1,0], [-1,1],
-        [0,-1], [0,1],
-        [1,-1], [1,0] [1,1]      
+        {x: -1,y: -1}, {x: -1,y: 0}, {x: -1,y: 1}, 
+        {x: 0,y: -1}, {x: 0,y: 1},
+        {x: 1,y: -1}, {x: 1,y: 0}, {x: 1,y: 1}, 
       ]
-        let vizinhos = []
-        let abacaxi = possiveisVizinhos.forEach((i)=>{
-          console.log(x+i[0], y+i[1])
-          if (i[0] + x >= 0 && i[1] + y >= 0){
-            vizinhos.push([matriz[x+i[0]][y+i[1]]])
-            console.log('foi')
-          }
-        })
-      return 0 // FAZER A CONTAGEM
+      let vizinhos = []
+      possiveisVizinhos.forEach((i)=>{
+        if ((i['x'] + x >= 0 && i['y'] + y >= 0) && (i['x'] + x < matriz.length && i['y'] + y < matriz[0].length)){
+          vizinhos.push({x: i['x']+x, y: i['y']+y})
+        }
+      })
+      let vizinhosVivos = 0
+      vizinhos.forEach((i)=>{
+        if (matriz[i['x']][i['y']] == 1){
+          vizinhosVivos+=1
+        }
+      })
+      return vizinhosVivos
     },
     geraNovaMatriz(matriz){
       this.novaMatriz = [
