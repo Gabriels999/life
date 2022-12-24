@@ -1,24 +1,23 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <HelloWorld/>
-    <div v-for="item, index_row in matriz" :key="index_row" class="flex">
-      <div v-for="item, index_col in matriz[index_row]" :key="index_col">
-        <CelulaLife :row="index_row" :col="index_col" @update-life="updateCelula($event)" :state="item"/>
+    <h1>Life Game</h1>
+    <div class="board">
+      <div v-for="item, index_row in matriz" :key="index_row" class="flex">
+        <div v-for="item, index_col in matriz[index_row]" :key="index_col">
+          <CelulaLife :row="index_row" :col="index_col" @update-life="updateCelula($event)" :state="item"/>
+          </div>
+        </div>
       </div>
-    </div>
     <button @click="init">Jogar</button>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld'
 import CelulaLife from './components/CelulaLife'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld,
     CelulaLife
   },
   data() {
@@ -131,4 +130,9 @@ export default {
 .flex {
   display: flex;
 }
+.board{
+  margin: 5% 43%;
+  width: 20%;
+}
+
 </style>
