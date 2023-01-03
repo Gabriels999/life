@@ -9,6 +9,11 @@ python3 main.py
 
 
 ### Versao VueJS:
+#### Jogue na versao online:
+- disponivel em: https://lifegamevueapp.netlify.app/
+
+#### Jogue localmente:
+
 ```
 cd vue-app/
 
