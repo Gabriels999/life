@@ -2,125 +2,137 @@
   <div id="app">
     <h1>Life Game</h1>
     <div class="board">
-      <div v-for="item, index_row in matriz" :key="index_row" class="flex">
-        <div v-for="item, index_col in matriz[index_row]" :key="index_col">
-          <CelulaLife :row="index_row" :col="index_col" @update-life="updateCelula($event)" :state="item"/>
-          </div>
+      <div v-for="(item, index_row) in matriz" :key="index_row" class="flex">
+        <div v-for="(item, index_col) in matriz[index_row]" :key="index_col">
+          <CelulaLife
+            :row="index_row"
+            :col="index_col"
+            @update-life="updateCelula($event)"
+            :state="item"
+          />
         </div>
       </div>
+    </div>
     <button @click="init">Jogar</button>
   </div>
 </template>
 
 <script>
-import CelulaLife from './components/CelulaLife'
+import CelulaLife from "./components/CelulaLife";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    CelulaLife
+    CelulaLife,
   },
   data() {
     return {
       cols: 4,
       rows: 4,
       matriz: [
-        [1,0,0,0,0,1,0,0,1,0,0],
-        [0,0,1,0,0,0,0,1,0,0,1],
-        [0,0,0,0,1,0,0,0,0,0,0],
-        [0,0,1,0,0,0,0,1,0,0,1],
-        [0,0,0,0,0,1,0,0,0,1,0],
-        [0,0,0,1,0,1,0,0,0,0,0],
-        [0,0,0,0,1,0,0,1,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,1],
-        [0,1,0,1,0,1,0,1,0,0,0],
-        [0,1,0,0,0,0,0,0,1,0,1]
+        [1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0],
+        [0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1],
+        [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+        [0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1],
+        [0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0],
+        [0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0],
+        [0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1],
       ],
       novaMatriz: [],
-      alive: false
-    }
+      alive: false,
+    };
   },
   methods: {
-    init(){
-      this.matriz = this.geraNovaMatriz(this.matriz)
-      this.rodaGame(this.matriz)
+    init() {
+      this.matriz = this.geraNovaMatriz(this.matriz);
+      this.rodaGame(this.matriz);
     },
-    rodaGame(matriz){
-      this.matriz = this.geraNovaMatriz(matriz)
-      setTimeout(()=>{
-        this.rodaGame(this.matriz)
-      }, 700)
+    rodaGame(matriz) {
+      this.matriz = this.geraNovaMatriz(matriz);
+      setTimeout(() => {
+        this.rodaGame(this.matriz);
+      }, 700);
     },
-    updateCelula(event){
-      if (event[2] == 0){
-        this.matriz[event[0]][event[1]] = 1
+    updateCelula(event) {
+      if (event[2] == 0) {
+        this.matriz[event[0]][event[1]] = 1;
       } else {
-        this.matriz[event[0]][event[1]] = 0
+        this.matriz[event[0]][event[1]] = 0;
       }
     },
-    verificaVizinhos(matriz, x, y){
+    verificaVizinhos(matriz, x, y) {
       let possiveisVizinhos = [
-        {x: -1,y: -1}, {x: -1,y: 0}, {x: -1,y: 1}, 
-        {x: 0,y: -1}, {x: 0,y: 1},
-        {x: 1,y: -1}, {x: 1,y: 0}, {x: 1,y: 1}, 
-      ]
-      let vizinhos = []
-      possiveisVizinhos.forEach((i)=>{
-        if ((i['x'] + x >= 0 && i['y'] + y >= 0) && (i['x'] + x < matriz.length && i['y'] + y < matriz[0].length)){
-          vizinhos.push({x: i['x']+x, y: i['y']+y})
+        { x: -1, y: -1 },
+        { x: -1, y: 0 },
+        { x: -1, y: 1 },
+        { x: 0, y: -1 },
+        { x: 0, y: 1 },
+        { x: 1, y: -1 },
+        { x: 1, y: 0 },
+        { x: 1, y: 1 },
+      ];
+      let vizinhos = [];
+      possiveisVizinhos.forEach((i) => {
+        if (
+          i["x"] + x >= 0 &&
+          i["y"] + y >= 0 &&
+          i["x"] + x < matriz.length &&
+          i["y"] + y < matriz[0].length
+        ) {
+          vizinhos.push({ x: i["x"] + x, y: i["y"] + y });
         }
-      })
-      let vizinhosVivos = 0
-      vizinhos.forEach((i)=>{
-        if (matriz[i['x']][i['y']] == 1){
-          vizinhosVivos+=1
+      });
+      let vizinhosVivos = 0;
+      vizinhos.forEach((i) => {
+        if (matriz[i["x"]][i["y"]] == 1) {
+          vizinhosVivos += 1;
         }
-      })
-      return vizinhosVivos
+      });
+      return vizinhosVivos;
     },
-    geraNovaMatriz(matriz){
+    geraNovaMatriz(matriz) {
       this.novaMatriz = [
-        [0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0,0,0,0]
-      ]
-      for(let i = 0; i < matriz.length; i++){
-        for(let j = 0; j < matriz[i].length; j++){
-          const vizinhosVivos = this.verificaVizinhos(matriz, i, j)
-          if (matriz[i][j] == 1){
-            if (vizinhosVivos < 2 || vizinhosVivos > 3){
-              this.novaMatriz[i][j] = 0
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      ];
+      for (let i = 0; i < matriz.length; i++) {
+        for (let j = 0; j < matriz[i].length; j++) {
+          const vizinhosVivos = this.verificaVizinhos(matriz, i, j);
+          if (matriz[i][j] == 1) {
+            if (vizinhosVivos < 2 || vizinhosVivos > 3) {
+              this.novaMatriz[i][j] = 0;
+            } else {
+              this.novaMatriz[i][j] = 1;
             }
-            else {
-              this.novaMatriz[i][j] = 1
-            }
-          }
-          else {
-            if (vizinhosVivos == 3){
-              this.novaMatriz[i][j] = 1
-            }
-            else {
-              this.novaMatriz[i][j] = 0
+          } else {
+            if (vizinhosVivos == 3) {
+              this.novaMatriz[i][j] = 1;
+            } else {
+              this.novaMatriz[i][j] = 0;
             }
           }
         }
       }
-      return this.novaMatriz
-    }
-  }
-}
+      return this.novaMatriz;
+    },
+  },
+};
 </script>
 
 <style>
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
@@ -130,9 +142,8 @@ export default {
 .flex {
   display: flex;
 }
-.board{
+.board {
   margin: 5% 43%;
   width: 20%;
 }
-
 </style>
