@@ -19,6 +19,8 @@
 
 <script>
 import CelulaLife from "./components/CelulaLife";
+import vizinhos from "./service/vizinhos"
+import atualizaCelula from "./service/matriz"
 
 export default {
   name: "App",
@@ -57,41 +59,7 @@ export default {
       }, 700);
     },
     updateCelula(event) {
-      if (event[2] == 0) {
-        this.matriz[event[0]][event[1]] = 1;
-      } else {
-        this.matriz[event[0]][event[1]] = 0;
-      }
-    },
-    verificaVizinhos(matriz, x, y) {
-      let possiveisVizinhos = [
-        { x: -1, y: -1 },
-        { x: -1, y: 0 },
-        { x: -1, y: 1 },
-        { x: 0, y: -1 },
-        { x: 0, y: 1 },
-        { x: 1, y: -1 },
-        { x: 1, y: 0 },
-        { x: 1, y: 1 },
-      ];
-      let vizinhos = [];
-      possiveisVizinhos.forEach((i) => {
-        if (
-          i["x"] + x >= 0 &&
-          i["y"] + y >= 0 &&
-          i["x"] + x < matriz.length &&
-          i["y"] + y < matriz[0].length
-        ) {
-          vizinhos.push({ x: i["x"] + x, y: i["y"] + y });
-        }
-      });
-      let vizinhosVivos = 0;
-      vizinhos.forEach((i) => {
-        if (matriz[i["x"]][i["y"]] == 1) {
-          vizinhosVivos += 1;
-        }
-      });
-      return vizinhosVivos;
+      this.matriz = atualizaCelula.updateCelula(this.matriz, event)
     },
     geraNovaMatriz(matriz) {
       this.novaMatriz = [
@@ -108,7 +76,7 @@ export default {
       ];
       for (let i = 0; i < matriz.length; i++) {
         for (let j = 0; j < matriz[i].length; j++) {
-          const vizinhosVivos = this.verificaVizinhos(matriz, i, j);
+          const vizinhosVivos = vizinhos.verificaVizinhos(matriz, i, j);
           if (matriz[i][j] == 1) {
             if (vizinhosVivos < 2 || vizinhosVivos > 3) {
               this.novaMatriz[i][j] = 0;
