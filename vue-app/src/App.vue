@@ -20,7 +20,7 @@
 <script>
 import CelulaLife from "./components/CelulaLife";
 import { verificaVizinhos } from "./service/vizinhos"
-import atualizaCelula from "./service/matriz"
+import { updateCell } from "./service/matriz"
 
 export default {
   name: "App",
@@ -58,9 +58,9 @@ export default {
         this.rodaGame(this.matriz);
       }, 700);
     },
-    updateCelula(event) {
-      this.matriz = atualizaCelula.updateCelula(this.matriz, event)
-    },
+    // updateCelula(event) {
+    //   this.matriz = updateCell(this.matriz, event)
+    // },
     geraNovaMatriz(matriz) {
       this.novaMatriz = [
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],

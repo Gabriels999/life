@@ -5,13 +5,11 @@
 <script>
 export default {
   props: {
-    row: "",
-    col: "",
     state: 0,
   },
   methods: {
     changeState() {
-      this.$emit("update-life", (this.row, this.col));
+      // this.$emit("update-life", (this.row, this.col));
       if (this.state == 1) {
         this.state = 0;
       } else {
