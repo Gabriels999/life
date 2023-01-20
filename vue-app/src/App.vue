@@ -19,7 +19,7 @@
 
 <script>
 import CelulaLife from "./components/CelulaLife";
-import vizinhos from "./service/vizinhos"
+import { verificaVizinhos } from "./service/vizinhos"
 import atualizaCelula from "./service/matriz"
 
 export default {
@@ -76,7 +76,7 @@ export default {
       ];
       for (let i = 0; i < matriz.length; i++) {
         for (let j = 0; j < matriz[i].length; j++) {
-          const vizinhosVivos = vizinhos.verificaVizinhos(matriz, i, j);
+          const vizinhosVivos = verificaVizinhos(matriz, i, j);
           if (matriz[i][j] == 1) {
             if (vizinhosVivos < 2 || vizinhosVivos > 3) {
               this.novaMatriz[i][j] = 0;

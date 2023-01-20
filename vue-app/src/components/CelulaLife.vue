@@ -1,5 +1,5 @@
 <template>
-  <button :class="{ box: true, alive: state }" @click="changeState"></button>
+  <button class="box" :class="{ alive: state }" @click="changeState"></button>
 </template>
 
 <script>
@@ -11,7 +11,7 @@ export default {
   },
   methods: {
     changeState() {
-      this.$emit("update-life", [this.row, this.col, this.state]);
+      this.$emit("update-life", (this.row, this.col));
       if (this.state == 1) {
         this.state = 0;
       } else {
